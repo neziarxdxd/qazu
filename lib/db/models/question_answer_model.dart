@@ -20,4 +20,13 @@ class QuestionAnswerModel {
   String? option3;
   @HiveField(6)
   String? option4;
+
+  QuestionAnswerModel(
+      {this.id,
+      this.question,
+      this.answer,
+      this.option1,
+      this.option2,
+      this.option3,
+      this.option4});
 }

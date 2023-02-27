@@ -72,6 +72,40 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Container(
+                    height: 60,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: DropdownButton(
+                      items: [
+                        DropdownMenuItem(
+                          child: Text("Student"),
+                          value: "student",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Teacher"),
+                          value: "teacher",
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          dropdownValue = value;
+                        });
+                      },
+                      hint: Text("Select Account Type"),
+                      value: dropdownValue ?? "student",
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: TextFormField(
                     validator: (value) =>
                         value!.isEmpty ? "Enter First Name" : null,
@@ -165,37 +199,6 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                   height: 20,
                 ),
                 // DropdownButton with two options Student and Teacher
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Container(
-                    height: 60,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: DropdownButton(
-                      items: [
-                        DropdownMenuItem(
-                          child: Text("Student"),
-                          value: "Student",
-                        ),
-                        DropdownMenuItem(
-                          child: Text("Teacher"),
-                          value: "Teacher",
-                        ),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          dropdownValue = value;
-                        });
-                      },
-                      hint: Text("Select Account Type"),
-                      value: dropdownValue ?? "Student",
-                    ),
-                  ),
-                ),
 
                 SizedBox(
                   height: 20,
@@ -210,7 +213,7 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                         lastName: controllerLastName.text,
                         email: controllerEmail.text,
                         password: controllerPassword.text,
-                        type: dropdownValue ?? "Student",
+                        type: dropdownValue ?? "student",
                         // generate random id length 32
                         id: 0,
                       );

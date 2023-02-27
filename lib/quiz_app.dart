@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:qazu/db/models/question_answer_model.dart';
+import 'package:qazu/db/quiz_add.dart';
 
 class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+  // key
+  final int keyQuiz;
+  const MyWidget({super.key, required this.keyQuiz});
 
   @override
   State<MyWidget> createState() => _MyWidgetState();
@@ -11,19 +15,53 @@ class _MyWidgetState extends State<MyWidget> {
   bool isPressed = false;
   int selected = 0;
   int questionIndex = 0;
+  late QuizDB quizDB;
+  late List<QuestionAnswerModel> questionAnswerModel;
+  late String title;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    quizDB = QuizDB();
+    questionAnswerModel = <QuestionAnswerModel>[];
+    // get quiz title and description at key
+    quizDB.getQuizzes().then((value) {
+      setState(() {
+        title = value[widget.keyQuiz].title!;
+      });
+    });
+    quizDB.getQuestionsToQuiz(widget.keyQuiz).then((value) {
+      setState(() {
+        print("value: $value");
+        print("value length: ${value.length}");
+        print("value: ${value[0].question}");
+        questionAnswerModel = value;
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> options = ["Planning", "Analysis", "Design", "Implementation"];
-    List<String> questions = [
-      "What is the first step in SDLC?",
-      "Who is the father of computer?",
-      "What is the full form of CPU?",
-      "What is the full form of RAM?",
-      "What is the full form of ROM?",
-      "What is the full form of OS?",
-      "What is the full form of URL?",
-    ];
+    // List<String> options = ["Planning", "Analysis", "Design", "Implementation"];
+    // List<String> questions = [
+    //   "What is the first step in SDLC?",
+    //   "Who is the father of computer?",
+    //   "What is the full form of CPU?",
+    //   "What is the full form of RAM?",
+    //   "What is the full form of ROM?",
+    //   "What is the full form of OS?",
+    //   "What is the full form of URL?",
+    // ];
+
+    List questions = questionAnswerModel.map((e) => e.question).toList();
+    List options = questionAnswerModel
+        .map((e) => [e.option1, e.option2, e.option3, e.answer])
+        .toList();
+    // randomize options from the index of the question
+    List randomOptions = options[questionIndex];
+    randomOptions = randomOptions..shuffle();
     return Scaffold(
         // appbar with timer with number in right and back button at left no color
         // Hex color FAFAFA for background
@@ -64,7 +102,7 @@ class _MyWidgetState extends State<MyWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Question ${questionIndex + 1}/${questions.length}",
+                Text("sdsd",
                     style: TextStyle(
                         color: Color.fromARGB(255, 179, 171, 213),
                         fontWeight: FontWeight.bold)),
@@ -105,7 +143,7 @@ class _MyWidgetState extends State<MyWidget> {
                   ),
                   child: Center(
                     child: Text(
-                      options[i],
+                      options[questionIndex][i],
                       style: TextStyle(
                           color: selected == i ? Colors.white : Colors.black,
                           fontSize: 20,

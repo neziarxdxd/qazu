@@ -175,7 +175,7 @@ class _ListAccountsState extends State<ListAccounts> {
                               );
                             },
                             title: Text(
-                                "sdsd ${snapshot.data![index].firstName}  ${snapshot.data![index].lastName}"),
+                                "${snapshot.data![index].firstName}  ${snapshot.data![index].lastName}"),
                             // display the Key of the account
                             subtitle: Text(
                               snapshot.data![index].email.toString(),

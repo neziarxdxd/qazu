@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:qazu/admin_account.dart';
 import 'package:qazu/button.dart';
+import 'package:qazu/db/list_accounts.dart';
+import 'package:qazu/db/models/user_model.dart';
+import 'package:qazu/list_of_quiz.dart';
+import 'package:qazu/listaccountpage.dart';
+import 'package:qazu/prof/add_quiz.dart';
+import 'package:qazu/quiz_app.dart';
 
 class LoginAccounts extends StatefulWidget {
   const LoginAccounts({super.key});
@@ -12,7 +18,22 @@ class LoginAccounts extends StatefulWidget {
 class _LoginAccountsState extends State<LoginAccounts> {
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
+  late Accounts accountSettings;
+  late UserModel user;
+  late List<UserModel> listUsers;
+
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    accountSettings = Accounts();
+    accountSettings.getAccounts().then((value) {
+      listUsers = value;
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +78,6 @@ class _LoginAccountsState extends State<LoginAccounts> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: TextFormField(
-                      validator: (value) {
-                        // if email doesn't have @ccc.edu.ph return error
-                        if (value!.contains('@ccc.edu.ph')) {
-                          return null;
-                        } else {
-                          return 'Please enter a valid email';
-                        }
-                      },
                       controller: controllerEmail,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -83,6 +96,7 @@ class _LoginAccountsState extends State<LoginAccounts> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: TextField(
+                      obscureText: true,
                       controller: controllerPassword,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -98,17 +112,56 @@ class _LoginAccountsState extends State<LoginAccounts> {
                   ),
                   ButtonCustom(
                     onPressed: () {
-                      // if admin got to admin page
-                      // if user got quiz page
-                      if (controllerEmail.text == 'admin' &&
-                          controllerPassword.text == 'admin') {
-                        // go to admin_account.dart
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AdminAccountPage(),
-                          ),
-                        );
+                      String email = controllerEmail.text;
+                      String password = controllerPassword.text;
+                      print("Submitted");
+                      print(email);
+                      print("Password: $password");
+
+                      bool isUserExist = listUsers.any((element) =>
+                          element.email == controllerEmail.text &&
+                          element.password == controllerPassword.text);
+                      print("isUserExist: $isUserExist");
+                      int index = listUsers.indexWhere((element) =>
+                          element.email == controllerEmail.text &&
+                          element.password == controllerPassword.text);
+                      print("index: $index");
+                      String getRole =
+                          index == -1 ? "" : listUsers[index].type!;
+                      print("getRole: $getRole");
+
+                      if (isUserExist) {
+                        if (getRole == 'teacher') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddQuizPage(),
+                            ),
+                          );
+                        } else if (getRole == 'student') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const QuizListStudents(),
+                            ),
+                          );
+                        }
+                        //}
+                      } else {
+                        if (email == 'admin' && password == 'admin') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AdminAccountPage(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Invalid email or password'),
+                            ),
+                          );
+                        }
                       }
                     },
                     text: "Login",
