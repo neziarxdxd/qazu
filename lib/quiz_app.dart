@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qazu/db/models/question_answer_model.dart';
 import 'package:qazu/db/quiz_add.dart';
+import 'package:qazu/done_quiz.dart';
 
 class MyWidget extends StatefulWidget {
   // key
@@ -130,9 +131,21 @@ class _MyWidgetState extends State<MyWidget> {
               TextButton(
                 onPressed: () => setState(() {
                   print("dfldfld");
-                  isPressed = !isPressed;
-                  selected = i;
-                  questionIndex++;
+                  // if last question then go to done page
+                  if (questionIndex == questions.length - 1) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => DoneQuiz()));
+                  } else {
+                    // if selected option is correct then increase score
+                    if (options[questionIndex][i] ==
+                        questionAnswerModel[questionIndex].answer) {
+                      // score++;
+                    }
+                    // go to next question
+                    questionIndex++;
+                    // reset selected option
+                    selected = 0;
+                  }
                 }),
                 child: Container(
                   width: double.infinity,
