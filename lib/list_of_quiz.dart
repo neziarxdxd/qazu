@@ -6,7 +6,12 @@ import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/quiz_app.dart';
 
 class QuizListStudents extends StatefulWidget {
-  const QuizListStudents({super.key});
+  final String? emailTaker;
+  final String? fullNameTaker;
+  final int? studentKeyID;
+
+  const QuizListStudents(
+      {super.key, this.emailTaker, this.fullNameTaker, this.studentKeyID});
 
   @override
   State<QuizListStudents> createState() => _QuizListStudentsState();
@@ -47,19 +52,19 @@ class _QuizListStudentsState extends State<QuizListStudents> {
             ),
             ListTile(
               onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const QuizListStudents()));
+                // Navigator.pushReplacement(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const QuizListStudents()));
               },
               title: const Text("Quizzes"),
             ),
             ListTile(
               onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const QuizListStudents()));
+                // Navigator.pushReplacement(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const QuizListStudents()));
               },
               title: const Text("Done Quizzes"),
             ),
@@ -131,6 +136,14 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                             MaterialPageRoute(
                               builder: (context) => MyWidget(
                                 keyQuiz: box.keyAt(index),
+                                quizID: box.keyAt(index),
+                                duration: 0,
+                                emailTaker: widget.emailTaker ?? '',
+                                fullNameTaker: widget.fullNameTaker ?? '',
+                                studentKeyID: widget.studentKeyID ?? 0,
+                                quizDescription:
+                                    snapshot.data![index].description!,
+                                quizTitle: snapshot.data![index].title!,
                               ),
                             ),
                           ),

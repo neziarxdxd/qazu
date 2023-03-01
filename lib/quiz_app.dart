@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qazu/db/exam_taker_db.dart';
+import 'package:qazu/db/models/exam_taker_model.dart';
 import 'package:qazu/db/models/question_answer_model.dart';
 import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/done_quiz.dart';
@@ -6,7 +8,23 @@ import 'package:qazu/done_quiz.dart';
 class MyWidget extends StatefulWidget {
   // key
   final int keyQuiz;
-  const MyWidget({super.key, required this.keyQuiz});
+  final String emailTaker;
+  final String fullNameTaker;
+  final int studentKeyID;
+  final int quizID;
+  final String quizTitle;
+  final String quizDescription;
+  final double duration;
+  const MyWidget(
+      {super.key,
+      required this.keyQuiz,
+      required this.emailTaker,
+      required this.fullNameTaker,
+      required this.studentKeyID,
+      required this.quizID,
+      required this.quizTitle,
+      required this.quizDescription,
+      required this.duration});
 
   @override
   State<MyWidget> createState() => _MyWidgetState();
@@ -19,6 +37,8 @@ class _MyWidgetState extends State<MyWidget> {
   late QuizDB quizDB;
   late List<QuestionAnswerModel> questionAnswerModel;
   late String title;
+  // exam taken
+  late ExamTakerDB examTakerDB;
   // score
   int score = 0;
   int wrong = 0;
@@ -26,6 +46,7 @@ class _MyWidgetState extends State<MyWidget> {
   void initState() {
     // TODO: implement initState
     quizDB = QuizDB();
+    examTakerDB = ExamTakerDB();
     questionAnswerModel = <QuestionAnswerModel>[];
     // get quiz title and description at key
     quizDB.getQuizzes().then((value) {
@@ -151,7 +172,7 @@ class _MyWidgetState extends State<MyWidget> {
                     // reset selected option
                     selected = 0;
                   } else {
-                    // if selected option is correct then increase score
+                    examTakerDB.addExamTaker(ExamTakerModel());
 
                     Navigator.push(
                         context,

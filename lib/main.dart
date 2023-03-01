@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:qazu/admin_account.dart';
 import 'package:qazu/db/account_model.dart';
+import 'package:qazu/db/models/exam_taker_model.dart';
 import 'package:qazu/db/models/question_answer_model.dart';
 import 'package:qazu/db/models/quiz_model.dart';
 import 'package:qazu/db/models/user_model.dart';
@@ -22,11 +23,13 @@ Future<void> main() async {
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(QuestionAnswerModelAdapter());
   Hive.registerAdapter(QuizModelAdapter());
+  Hive.registerAdapter(ExamTakerModelAdapter());
 
   await Hive.openBox('mydb');
   await Hive.openBox('accounts');
   await Hive.openBox('quizzes');
   await Hive.openBox('questionsAndAnswers');
+  await Hive.openBox('examTakers');
   runApp(const MyApp());
 }
 

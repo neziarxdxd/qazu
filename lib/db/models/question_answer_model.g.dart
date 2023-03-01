@@ -24,9 +24,9 @@ class QuestionAnswerModelAdapter extends TypeAdapter<QuestionAnswerModel> {
       option2: fields[4] as String?,
       option3: fields[5] as String?,
       option4: fields[6] as String?,
-    )
-      ..quizId = fields[7] as int?
-      ..points = fields[8] as int?;
+      quizId: fields[7] as int?,
+      points: fields[8] as int?,
+    );
   }
 
   @override

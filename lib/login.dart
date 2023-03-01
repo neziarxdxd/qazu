@@ -121,6 +121,7 @@ class _LoginAccountsState extends State<LoginAccounts> {
                       bool isUserExist = listUsers.any((element) =>
                           element.email == controllerEmail.text &&
                           element.password == controllerPassword.text);
+
                       print("isUserExist: $isUserExist");
                       int index = listUsers.indexWhere((element) =>
                           element.email == controllerEmail.text &&
@@ -131,6 +132,15 @@ class _LoginAccountsState extends State<LoginAccounts> {
                       print("getRole: $getRole");
 
                       if (isUserExist) {
+                        String firstName = listUsers[index].firstName!;
+                        String lastName = listUsers[index].lastName!;
+                        String fullName = firstName + " " + lastName;
+                        print("fullName: $fullName");
+                        int studentIDKey = listUsers[index].id!;
+                        print("id: $studentIDKey");
+                        String emailTaker = listUsers[index].email!;
+                        print("email: $email");
+
                         if (getRole == 'teacher') {
                           Navigator.push(
                             context,
@@ -142,7 +152,11 @@ class _LoginAccountsState extends State<LoginAccounts> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const QuizListStudents(),
+                              builder: (context) => QuizListStudents(
+                                studentKeyID: studentIDKey,
+                                fullNameTaker: fullName,
+                                emailTaker: emailTaker,
+                              ),
                             ),
                           );
                         }

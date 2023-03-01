@@ -15,7 +15,8 @@ class QuizModel {
   double? duration;
   @HiveField(5)
   List<QuestionAnswerModel>? questions;
-
+  @HiveField(4)
+  String? examCode;
   QuizModel(
       {this.id, this.title, this.description, this.duration, this.questions});
 }

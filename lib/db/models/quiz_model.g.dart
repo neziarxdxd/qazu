@@ -22,13 +22,13 @@ class QuizModelAdapter extends TypeAdapter<QuizModel> {
       description: fields[2] as String?,
       duration: fields[3] as double?,
       questions: (fields[5] as List?)?.cast<QuestionAnswerModel>(),
-    );
+    )..examCode = fields[4] as String?;
   }
 
   @override
   void write(BinaryWriter writer, QuizModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +38,9 @@ class QuizModelAdapter extends TypeAdapter<QuizModel> {
       ..writeByte(3)
       ..write(obj.duration)
       ..writeByte(5)
-      ..write(obj.questions);
+      ..write(obj.questions)
+      ..writeByte(4)
+      ..write(obj.examCode);
   }
 
   @override
