@@ -16,12 +16,13 @@ class QuizModelAdapter extends TypeAdapter<QuizModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return QuizModel()
-      ..id = fields[0] as int?
-      ..title = fields[1] as String?
-      ..description = fields[2] as String?
-      ..duration = fields[3] as double?
-      ..questions = (fields[5] as List?)?.cast<QuestionAnswerModel>();
+    return QuizModel(
+      id: fields[0] as int?,
+      title: fields[1] as String?,
+      description: fields[2] as String?,
+      duration: fields[3] as double?,
+      questions: (fields[5] as List?)?.cast<QuestionAnswerModel>(),
+    );
   }
 
   @override

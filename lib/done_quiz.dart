@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:qazu/list_of_quiz.dart';
 
 class DoneQuiz extends StatefulWidget {
-  const DoneQuiz({super.key});
+  int? score;
+  int? wrong;
+  DoneQuiz({super.key, this.score, this.wrong});
 
   @override
   State<DoneQuiz> createState() => _DoneQuizState();
@@ -20,6 +22,8 @@ class _DoneQuizState extends State<DoneQuiz> {
         crossAxisAlignment: CrossAxisAlignment.center,
         // done then with button of go to home
         children: [
+          // Image
+          Image(image: AssetImage("assets/images/done.png"), height: 150),
           Text("Done"),
           TextButton(
               onPressed: () {
@@ -29,7 +33,8 @@ class _DoneQuizState extends State<DoneQuiz> {
                     MaterialPageRoute(
                         builder: (context) => QuizListStudents()));
               },
-              child: Text("Go to Home"))
+              child: Text(
+                  "Go to Home\n Score: ${widget.score}\n Wrong: ${widget.wrong}"))
         ],
       ),
     ));

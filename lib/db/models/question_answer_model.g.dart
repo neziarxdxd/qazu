@@ -16,20 +16,23 @@ class QuestionAnswerModelAdapter extends TypeAdapter<QuestionAnswerModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return QuestionAnswerModel()
-      ..id = fields[0] as int?
-      ..question = fields[1] as String?
-      ..answer = fields[2] as String?
-      ..option1 = fields[3] as String?
-      ..option2 = fields[4] as String?
-      ..option3 = fields[5] as String?
-      ..option4 = fields[6] as String?;
+    return QuestionAnswerModel(
+      id: fields[0] as int?,
+      question: fields[1] as String?,
+      answer: fields[2] as String?,
+      option1: fields[3] as String?,
+      option2: fields[4] as String?,
+      option3: fields[5] as String?,
+      option4: fields[6] as String?,
+    )
+      ..quizId = fields[7] as int?
+      ..points = fields[8] as int?;
   }
 
   @override
   void write(BinaryWriter writer, QuestionAnswerModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -43,7 +46,11 @@ class QuestionAnswerModelAdapter extends TypeAdapter<QuestionAnswerModel> {
       ..writeByte(5)
       ..write(obj.option3)
       ..writeByte(6)
-      ..write(obj.option4);
+      ..write(obj.option4)
+      ..writeByte(7)
+      ..write(obj.quizId)
+      ..writeByte(8)
+      ..write(obj.points);
   }
 
   @override

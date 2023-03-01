@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:qazu/account_setting.dart';
 import 'package:qazu/db/models/quiz_model.dart';
 import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/quiz_app.dart';
@@ -30,6 +31,50 @@ class _QuizListStudentsState extends State<QuizListStudents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: Container(
+                color: Colors.blue,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Quiz App"),
+                  ],
+                ),
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const QuizListStudents()));
+              },
+              title: const Text("Quizzes"),
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const QuizListStudents()));
+              },
+              title: const Text("Done Quizzes"),
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AccountSetting()));
+              },
+              title: const Text("Account Settings"),
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: const Text("Quiz List"),
       ),

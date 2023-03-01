@@ -20,6 +20,10 @@ class QuestionAnswerModel {
   String? option3;
   @HiveField(6)
   String? option4;
+  @HiveField(7)
+  int? quizId;
+  @HiveField(8)
+  int? points;
 
   QuestionAnswerModel(
       {this.id,

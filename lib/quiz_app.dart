@@ -19,7 +19,9 @@ class _MyWidgetState extends State<MyWidget> {
   late QuizDB quizDB;
   late List<QuestionAnswerModel> questionAnswerModel;
   late String title;
-
+  // score
+  int score = 0;
+  int wrong = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -40,6 +42,9 @@ class _MyWidgetState extends State<MyWidget> {
       });
     });
 
+    // increase score if answer is correct
+    // increase wrong if answer is wrong
+
     super.initState();
   }
 
@@ -55,6 +60,14 @@ class _MyWidgetState extends State<MyWidget> {
     //   "What is the full form of OS?",
     //   "What is the full form of URL?",
     // ];
+
+    void checkAnswer(String answer) {
+      if (answer == questionAnswerModel[questionIndex].answer) {
+        score++;
+      } else {
+        wrong++;
+      }
+    }
 
     List questions = questionAnswerModel.map((e) => e.question).toList();
     List options = questionAnswerModel
@@ -132,19 +145,23 @@ class _MyWidgetState extends State<MyWidget> {
                 onPressed: () => setState(() {
                   print("dfldfld");
                   // if last question then go to done page
-                  if (questionIndex == questions.length - 1) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DoneQuiz()));
-                  } else {
-                    // if selected option is correct then increase score
-                    if (options[questionIndex][i] ==
-                        questionAnswerModel[questionIndex].answer) {
-                      // score++;
-                    }
-                    // go to next question
+                  checkAnswer(options[questionIndex][i]);
+                  if (questionIndex < questions.length - 1) {
                     questionIndex++;
                     // reset selected option
                     selected = 0;
+                  } else {
+                    // if selected option is correct then increase score
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DoneQuiz(
+                                  score: score,
+                                  wrong: wrong,
+                                )));
+
+                    // go to next question
                   }
                 }),
                 child: Container(
