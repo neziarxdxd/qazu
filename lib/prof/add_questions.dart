@@ -29,6 +29,7 @@ class AddQuestionPage extends StatefulWidget {
 }
 
 class _AddQuestionPageState extends State<AddQuestionPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController controllerQuestion = TextEditingController();
   TextEditingController conrollerAnswer = TextEditingController();
   TextEditingController controllerOpt1 = TextEditingController();
@@ -39,6 +40,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   late QuizDB quizDB;
   late Box box;
+  late Box boxQuestions;
   @override
   void initState() {
     // TODO: implement initState
@@ -47,8 +49,22 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
     quizDB = QuizDB();
     // open mydb then get the box accounts
     box = Hive.box("quizzes");
+    boxQuestions = Hive.box("questionsAndAnswers");
 
     listQuiz = quizDB.getQuestionsToQuiz(widget.quizId);
+    print("List Quiz: ${listQuiz.toString()}");
+    print("ADD QUESTION Quiz ID: ${widget.quizId}");
+  }
+
+  String? validationMessage(String value) {
+    if ((value == conrollerAnswer.text) && value == conrollerAnswer.text) {
+      return "Answer should not be the same as the options";
+    }
+    if (value.isEmpty) {
+      return "Field is required";
+    }
+
+    return null;
   }
 
   Widget build(BuildContext context) {
@@ -68,9 +84,9 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                           children: [
                             // Question
                             TextFormField(
-                              validator: (value) => value!.isEmpty
-                                  ? "Question is required"
-                                  : null,
+                              validator: (value) {
+                                validationMessage(value!);
+                              },
                               controller: controllerQuestion,
                               decoration: const InputDecoration(
                                   labelText: "Question",
@@ -78,8 +94,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                             ),
                             // Answer
                             TextFormField(
-                              validator: (value) =>
-                                  value!.isEmpty ? "Answer is required" : null,
+                              validator: (value) => validationMessage(value!),
                               controller: conrollerAnswer,
                               decoration: const InputDecoration(
                                   labelText: "Answer",
@@ -87,9 +102,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                             ),
                             // Option 1
                             TextFormField(
-                              validator: (value) => value!.isEmpty
-                                  ? "Option 1 is required"
-                                  : null,
+                              validator: (value) => validationMessage(value!),
                               controller: controllerOpt1,
                               decoration: const InputDecoration(
                                   labelText: "Option 1",
@@ -97,9 +110,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                             ),
                             // Option 2
                             TextFormField(
-                              validator: (value) => value!.isEmpty
-                                  ? "Option 2 is required"
-                                  : null,
+                              validator: (value) => validationMessage(value!),
                               controller: controllerOpt2,
                               decoration: const InputDecoration(
                                   labelText: "Option 2",
@@ -107,9 +118,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                             ),
                             // Option 3
                             TextFormField(
-                              validator: (value) => value!.isEmpty
-                                  ? "Option 3 is required"
-                                  : null,
+                              validator: (value) => validationMessage(value!),
                               controller: controllerOpt3,
                               decoration: const InputDecoration(
                                   labelText: "Option 3",
@@ -124,43 +133,41 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                               text: "Add Quiz",
                               onPressed: () {
                                 /// get the existing questions
-                                List<QuestionAnswerModel> existingQuestions =
-                                    [];
-
-                                quizDB
-                                    .getQuestionsToQuiz(widget.quizId)
-                                    .then((value) => value.forEach((element) {
-                                          existingQuestions.add(element);
-                                        }));
 
                                 // add the new question to the existing questions
-                                existingQuestions.add(QuestionAnswerModel(
-                                    question: controllerQuestion.text,
-                                    answer: conrollerAnswer.text,
-                                    option1: controllerOpt1.text,
-                                    option2: controllerOpt2.text,
-                                    option3: controllerOpt3.text));
-
-                                QuizModel quizModel = QuizModel(
-                                  id: widget.quizId,
-                                  title: widget.title,
-                                  description: widget.description,
-                                  duration: widget.duration,
-                                  questions: existingQuestions,
-                                );
 
                                 quizDB.addQuestionToQuiz(
-                                    widget.quizId, quizModel);
+                                    widget.quizId,
+                                    QuestionAnswerModel(
+                                      question: controllerQuestion.text,
+                                      answer: conrollerAnswer.text,
+                                      option1: controllerOpt1.text,
+                                      option2: controllerOpt2.text,
+                                      option3: controllerOpt3.text,
+                                      quizId: widget.quizId,
+                                    ));
 
                                 // print existing questions
 
                                 Navigator.pop(context);
+
                                 // refresh the page
                                 setState(() {
                                   // refresh the page
                                   listQuiz =
                                       quizDB.getQuestionsToQuiz(widget.quizId);
+                                  print(
+                                      "ADD QUESTION Quiz ID XXX: ${widget.quizId}");
+                                  listQuiz.then((value) {
+                                    print("List Quiz: ${value.toString()}");
+                                  });
                                 });
+                                // clear the text fields
+                                controllerQuestion.clear();
+                                conrollerAnswer.clear();
+                                controllerOpt1.clear();
+                                controllerOpt2.clear();
+                                controllerOpt3.clear();
                               },
                             )
                           ],
@@ -232,106 +239,129 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                 return AlertDialog(
                                   title: const Text("Edit Question"),
                                   content: SingleChildScrollView(
-                                    child: Column(children: [
-                                      TextFormField(
-                                        validator: (value) => value!.isEmpty
-                                            ? "Question is required"
-                                            : null,
-                                        controller: controllerQuestion,
-                                        decoration: const InputDecoration(
-                                            labelText: "Question",
-                                            hintText: "Enter Question"),
-                                      ),
-                                      // Answer
-                                      TextFormField(
-                                        validator: (value) => value!.isEmpty
-                                            ? "Answer is required"
-                                            : null,
-                                        controller: conrollerAnswer,
-                                        decoration: const InputDecoration(
-                                            labelText: "Answer",
-                                            hintText: "Enter Answer"),
-                                      ),
-                                      // Option 1
-                                      TextFormField(
-                                        validator: (value) => value!.isEmpty
-                                            ? "Option 1 is required"
-                                            : null,
-                                        controller: controllerOpt1,
-                                        decoration: const InputDecoration(
-                                            labelText: "Option 1",
-                                            hintText: "Enter Option 1"),
-                                      ),
-                                      // Option 2
-                                      TextFormField(
-                                        validator: (value) => value!.isEmpty
-                                            ? "Option 2 is required"
-                                            : null,
-                                        controller: controllerOpt2,
-                                        decoration: const InputDecoration(
-                                            labelText: "Option 2",
-                                            hintText: "Enter Option 2"),
-                                      ),
-                                      // Option 3
-                                      TextFormField(
-                                        validator: (value) => value!.isEmpty
-                                            ? "Option 3 is required"
-                                            : null,
-                                        controller: controllerOpt3,
-                                        decoration: const InputDecoration(
-                                            labelText: "Option 3",
-                                            hintText: "Enter Option 3"),
-                                      ),
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(children: [
+                                        TextFormField(
+                                          validator: (value) => value!.isEmpty
+                                              ? "Question is required"
+                                              : null,
+                                          controller: controllerQuestion =
+                                              TextEditingController(
+                                                  text: snapshot
+                                                      .data![index].question),
+                                          decoration: const InputDecoration(
+                                              labelText: "Question",
+                                              hintText: "Enter Question"),
+                                        ),
+                                        // Answer
+                                        TextFormField(
+                                          validator: (value) => value!.isEmpty
+                                              ? "Answer is required"
+                                              : null,
+                                          controller: conrollerAnswer =
+                                              TextEditingController(
+                                                  text: snapshot
+                                                      .data![index].answer),
+                                          decoration: const InputDecoration(
+                                              labelText: "Answer",
+                                              hintText: "Enter Answer"),
+                                        ),
+                                        // Option 1
+                                        TextFormField(
+                                          validator: (value) => value!.isEmpty
+                                              ? "Option 1 is required"
+                                              : null,
+                                          controller: controllerOpt1 =
+                                              TextEditingController(
+                                                  text: snapshot
+                                                      .data![index].option1),
+                                          decoration: const InputDecoration(
+                                              labelText: "Option 1",
+                                              hintText: "Enter Option 1"),
+                                        ),
+                                        // Option 2
+                                        TextFormField(
+                                          validator: (value) => value!.isEmpty
+                                              ? "Option 2 is required"
+                                              : null,
+                                          controller: controllerOpt2 =
+                                              TextEditingController(
+                                                  text: snapshot
+                                                      .data![index].option2),
+                                          decoration: const InputDecoration(
+                                              labelText: "Option 2",
+                                              hintText: "Enter Option 2"),
+                                        ),
+                                        // Option 3
+                                        TextFormField(
+                                          validator: (value) => value!.isEmpty
+                                              ? "Option 3 is required"
+                                              : null,
+                                          controller: controllerOpt3 =
+                                              TextEditingController(
+                                                  text: snapshot
+                                                      .data![index].option3),
+                                          decoration: const InputDecoration(
+                                              labelText: "Option 3",
+                                              hintText: "Enter Option 3"),
+                                        ),
 
-                                      // Option 4
+                                        // Option 4
 
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      ButtonCustom(
-                                        text: "Update Quiz",
-                                        onPressed: () {
-                                          /// get the existing questions
-                                          List<QuestionAnswerModel>
-                                              existingQuestions = [];
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        ButtonCustom(
+                                          text: "Update Quiz",
+                                          onPressed: () {
+                                            /// get the existing questions
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              quizDB.updateQuestion(
+                                                  boxQuestions.keyAt(index),
+                                                  QuestionAnswerModel(
+                                                    question:
+                                                        controllerQuestion.text,
+                                                    answer:
+                                                        conrollerAnswer.text,
+                                                    option1:
+                                                        controllerOpt1.text,
+                                                    option2:
+                                                        controllerOpt2.text,
+                                                    option3:
+                                                        controllerOpt3.text,
+                                                    quizId: widget.quizId,
+                                                  ));
+                                              // snckbar
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      "Question Updated Successfully"),
+                                                ),
+                                              );
+                                              Navigator.pop(context);
+                                              // clear the text fields
+                                              controllerQuestion.clear();
+                                              conrollerAnswer.clear();
+                                              controllerOpt1.clear();
+                                              controllerOpt2.clear();
+                                              controllerOpt3.clear();
+                                            }
+                                            // print existing questions
 
-                                          // get the existing questions
-                                          quizDB
-                                              .getQuestionsToQuiz(widget.quizId)
-                                              .then((value) =>
-                                                  value.forEach((element) {
-                                                    existingQuestions
-                                                        .add(element);
-                                                  }));
-                                          // get the question to be updated
-                                          QuestionAnswerModel
-                                              questionToBeUpdated =
-                                              snapshot.data![index];
-
-                                          QuizModel quizModel = QuizModel(
-                                            id: widget.quizId,
-                                            title: widget.title,
-                                            description: widget.description,
-                                            duration: widget.duration,
-                                            questions: existingQuestions,
-                                          );
-
-                                          quizDB.addQuestionToQuiz(
-                                              widget.quizId, quizModel);
-
-                                          // print existing questions
-
-                                          Navigator.pop(context);
-                                          // refresh the page
-                                          setState(() {
                                             // refresh the page
-                                            listQuiz =
-                                                quizDB.getQuestionsToQuiz(
-                                                    widget.quizId);
-                                          });
-                                        },
-                                      )
-                                    ]),
+                                            setState(() {
+                                              // refresh the page
+                                              listQuiz =
+                                                  quizDB.getQuestionsToQuiz(
+                                                      widget.quizId);
+                                            });
+                                          },
+                                        )
+                                      ]),
+                                    ),
                                   ),
                                 );
                               },

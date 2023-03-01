@@ -132,6 +132,20 @@ class _ListAccountsState extends State<ListAccounts> {
                                               labelText: "Password",
                                             ),
                                           ),
+                                          // DropdownButton is used to display the list of accounts
+                                          DropdownButton(
+                                            items: [
+                                              DropdownMenuItem(
+                                                child: Text("Admin"),
+                                                value: "Admin",
+                                              ),
+                                              DropdownMenuItem(
+                                                child: Text("User"),
+                                                value: "User",
+                                              ),
+                                            ],
+                                            onChanged: (String? value) {},
+                                          ),
                                         ],
                                       ),
                                     ),

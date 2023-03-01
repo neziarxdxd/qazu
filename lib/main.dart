@@ -26,6 +26,7 @@ Future<void> main() async {
   await Hive.openBox('mydb');
   await Hive.openBox('accounts');
   await Hive.openBox('quizzes');
+  await Hive.openBox('questionsAndAnswers');
   runApp(const MyApp());
 }
 
