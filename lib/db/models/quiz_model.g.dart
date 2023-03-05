@@ -22,7 +22,8 @@ class QuizModelAdapter extends TypeAdapter<QuizModel> {
       description: fields[2] as String?,
       duration: fields[3] as double?,
       questions: (fields[5] as List?)?.cast<QuestionAnswerModel>(),
-    )..examCode = fields[4] as String?;
+      examCode: fields[4] as String?,
+    );
   }
 
   @override

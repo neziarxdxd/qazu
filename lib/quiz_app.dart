@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:qazu/db/exam_taker_db.dart';
 import 'package:qazu/db/models/exam_taker_model.dart';
 import 'package:qazu/db/models/question_answer_model.dart';
 import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/done_quiz.dart';
 
+import 'db/models/exam_taker_db.dart';
+
 class MyWidget extends StatefulWidget {
   // key
-  final int keyQuiz;
+  final String examCode;
   final String emailTaker;
   final String fullNameTaker;
   final int studentKeyID;
-  final int quizID;
+
   final String quizTitle;
   final String quizDescription;
   final double duration;
   const MyWidget(
       {super.key,
-      required this.keyQuiz,
+      required this.examCode,
       required this.emailTaker,
       required this.fullNameTaker,
       required this.studentKeyID,
-      required this.quizID,
       required this.quizTitle,
       required this.quizDescription,
       required this.duration});
@@ -51,10 +51,10 @@ class _MyWidgetState extends State<MyWidget> {
     // get quiz title and description at key
     quizDB.getQuizzes().then((value) {
       setState(() {
-        title = value[widget.keyQuiz].title!;
+        title = "sdlsl";
       });
     });
-    quizDB.getQuestionsToQuiz(widget.keyQuiz).then((value) {
+    quizDB.getQuestionsToQuiz(widget.examCode).then((value) {
       setState(() {
         print("value: $value");
         print("value length: ${value.length}");

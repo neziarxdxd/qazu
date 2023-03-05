@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:qazu/account_setting.dart';
+import 'package:qazu/button.dart';
+import 'package:qazu/db/models/exam_taker_db.dart';
+import 'package:qazu/db/models/exam_taker_model.dart';
 import 'package:qazu/db/models/quiz_model.dart';
 import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/quiz_app.dart';
@@ -18,24 +21,114 @@ class QuizListStudents extends StatefulWidget {
 }
 
 class _QuizListStudentsState extends State<QuizListStudents> {
-  late Future<List<QuizModel>> listQuiz;
+  late Future<List<ExamTakerModel>> listQuiz;
 
   late QuizDB quizDB;
   late Box box;
+  late Box boxForExamTaker;
+  late ExamTakerDB examTakerDB;
+  // form key
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
+    box = Hive.box("quizzes");
+    boxForExamTaker = Hive.box("examTakers");
     // TODO: implement initState
     quizDB = QuizDB();
+    examTakerDB = ExamTakerDB();
     // open mydb then get the box accounts
-    box = Hive.box("quizzes");
 
-    listQuiz = quizDB.getQuizzes();
+    listQuiz = examTakerDB.getAllExamTaker(widget.emailTaker!.toString());
+  }
+
+  TextEditingController controllerExamCode = TextEditingController();
+
+  // check if the exam code is already taken for validation text field
+  bool checkExamCode(String examCode) {
+    return examTakerDB.checkIfAccessCodeIsAdded(
+        controllerExamCode.text, widget.emailTaker!);
+  }
+
+  bool checkIfQuizExists(String examCode) {
+    return quizDB.checkIfAccessCodeExists(controllerExamCode.text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // action button with modal for exam code then add to exam taker
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // open modal alert dialog
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Add Access Code"),
+                  content: Form(
+                    key: _formKey,
+                    child: Container(
+                      height: 300,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter access code";
+                              } else if (checkExamCode(value)) {
+                                return "Access code already added";
+                              } else if (!checkIfQuizExists(value)) {
+                                return "Access code does not exist";
+                              }
+
+                              return null;
+                            },
+                            controller: controllerExamCode,
+                            decoration: const InputDecoration(
+                                labelText: "Quiz Code",
+                                hintText: "Enter Quiz Code"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    ButtonCustom(
+                      text: "Enter Access Code",
+                      onPressed: () {
+                        if (_formKey.currentState!.validate() &&
+                            (!checkExamCode(controllerExamCode.text) &&
+                                (!checkIfQuizExists(
+                                    controllerExamCode.text)))) {
+                          print("Add Quiz");
+                          examTakerDB.addExamTaker(ExamTakerModel(
+                            finishedTime: 2,
+                            examCode: controllerExamCode.text,
+                            email: widget.emailTaker,
+                            fullName: widget.fullNameTaker,
+                            studentKeyID: widget.studentKeyID.toString(),
+                          ));
+                          examTakerDB.printAllExamTaker();
+                          // close modal
+
+                          // refresh the list
+                          setState(() {
+                            // get the list again by student key id
+                            listQuiz = examTakerDB
+                                .getAllExamTaker(widget.emailTaker!.toString());
+                          });
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ],
+                );
+              });
+        },
+        child: const Icon(Icons.add),
+      ),
+
       drawer: Drawer(
         child: ListView(
           children: [
@@ -87,6 +180,7 @@ class _QuizListStudentsState extends State<QuizListStudents> {
         future: listQuiz,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            print("Line 155 ${snapshot.data!.toString()}");
             return snapshot.data!.isEmpty
                 ? const Center(
                     child: Text("Empty"),
@@ -131,24 +225,33 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                           });
                         },
                         child: ListTile(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MyWidget(
-                                keyQuiz: box.keyAt(index),
-                                quizID: box.keyAt(index),
-                                duration: 0,
-                                emailTaker: widget.emailTaker ?? '',
-                                fullNameTaker: widget.fullNameTaker ?? '',
-                                studentKeyID: widget.studentKeyID ?? 0,
-                                quizDescription:
-                                    snapshot.data![index].description!,
-                                quizTitle: snapshot.data![index].title!,
+                          onTap: () {
+                            print(
+                                "Quiz!XD ID: ${snapshot.data![index].toString()}");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyWidget(
+                                  examCode: snapshot.data![index].examCode ??
+                                      "No Exam Code",
+                                  duration: 0,
+                                  emailTaker: widget.emailTaker ?? '',
+                                  fullNameTaker: widget.fullNameTaker ?? '',
+                                  studentKeyID: widget.studentKeyID ?? 0,
+                                  quizDescription:
+                                      snapshot.data![index].quizID ?? '',
+                                  quizTitle:
+                                      snapshot.data![index].quizTitle ?? '',
+                                ),
                               ),
-                            ),
-                          ),
-                          title: Text(snapshot.data![index].title!),
-                          subtitle: Text('sdds ${box.keyAt(index)}'),
+                            );
+                          },
+                          title: Text(snapshot.data![index].studentKeyID!),
+                          // score with is done or not with icon
+                          trailing: Text(widget.studentKeyID.toString()),
+                          // exam code
+                          subtitle: Text(
+                              "ExamCode: ${snapshot.data![index].examCode.toString()}"),
                         ),
                       );
                     },

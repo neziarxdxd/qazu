@@ -16,16 +16,17 @@ class ExamTakerModelAdapter extends TypeAdapter<ExamTakerModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ExamTakerModel()
-      ..email = fields[0] as String?
-      ..studentKeyID = fields[1] as String?
-      ..fullName = fields[2] as String?
-      ..quizID = fields[3] as String?
-      ..quizTitle = fields[4] as String?
-      ..quizDescription = fields[5] as String?
-      ..finishedTime = fields[6] as double?
-      ..score = fields[7] as double?
-      ..examCode = fields[8] as String?;
+    return ExamTakerModel(
+      email: fields[0] as String?,
+      studentKeyID: fields[1] as String?,
+      fullName: fields[2] as String?,
+      quizID: fields[3] as String?,
+      quizTitle: fields[4] as String?,
+      quizDescription: fields[5] as String?,
+      finishedTime: fields[6] as double?,
+      score: fields[7] as double?,
+      examCode: fields[8] as String?,
+    );
   }
 
   @override

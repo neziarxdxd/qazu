@@ -24,6 +24,8 @@ class QuestionAnswerModel {
   int? quizId;
   @HiveField(8)
   int? points;
+  @HiveField(9)
+  String? examCode;
 
   QuestionAnswerModel(
       {this.id,
@@ -34,11 +36,12 @@ class QuestionAnswerModel {
       this.option3,
       this.option4,
       this.quizId,
-      this.points});
+      this.points,
+      this.examCode});
 
   // to String
   @override
   String toString() {
-    return 'TEST!!!: /QuestionAnswerModel{id: $id, question: $question, answer: $answer, option1: $option1, option2: $option2, option3: $option3, option4: $option4, quizId: $quizId, points: $points}';
+    return 'TEST!!!: /QuestionAnswerModel{id: $id, question: $question, answer: $answer, option1: $option1, option2: $option2, option3: $option3, option4: $option4, quizId: $quizId, points: $points, examCode: $examCode}';
   }
 }

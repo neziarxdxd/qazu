@@ -149,7 +149,8 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                         return 'Please enter a valid email';
                       }
                     },
-                    controller: controllerEmail,
+                    controller: controllerEmail =
+                        TextEditingController(text: "@ccc.edu.ph"),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -179,12 +180,14 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
 
                     // generate random password
                     controller: controllerPassword = TextEditingController(
-                        text: password.randomPassword(
-                            letters: true,
-                            passwordLength: 13,
-                            numbers: true,
-                            uppercase: true,
-                            specialChar: true)),
+                      // text: password.randomPassword(
+                      //     letters: true,
+                      //     passwordLength: 13,
+                      //     numbers: true,
+                      //     uppercase: true,
+                      //     specialChar: true)),
+                      text: "Password123456!",
+                    ),
 
                     decoration: InputDecoration(
                       border: OutlineInputBorder(

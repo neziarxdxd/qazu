@@ -7,8 +7,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qazu/db/models/quiz_model.dart';
 
 import 'package:qazu/main.dart';
+import 'package:qazu/prof/add_quiz.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -26,5 +28,25 @@ void main() {
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
+  });
+
+  // test if exam code is valid using the function in add_quiz.dart
+  test('Exam code is valid', () {
+    QuizModel quizModel = QuizModel();
+    expect(quizModel.invalidExamCode('1234'), true);
+    // ABC
+    expect(quizModel.invalidExamCode('ABC'), true);
+    // 12345
+    expect(quizModel.invalidExamCode('12345'), true);
+    // 123456
+    expect(quizModel.invalidExamCode('123456'), true);
+
+    /// *(@#*@)ABC
+    expect(quizModel.invalidExamCode('*(@#*@)ABC'), false);
+    // ABC123
+    expect(quizModel.invalidExamCode('ABC123'), true);
+
+    /// ABC-2453
+    expect(quizModel.invalidExamCode('ABC-2453'), false);
   });
 }

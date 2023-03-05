@@ -18,5 +18,15 @@ class QuizModel {
   @HiveField(4)
   String? examCode;
   QuizModel(
-      {this.id, this.title, this.description, this.duration, this.questions});
+      {this.id,
+      this.title,
+      this.description,
+      this.duration,
+      this.questions,
+      this.examCode});
+  bool invalidExamCode(String examCode) {
+    // Only Letters and Numbers
+    RegExp regExp = RegExp(r"^[a-zA-Z0-9]+$");
+    return regExp.hasMatch(examCode);
+  }
 }

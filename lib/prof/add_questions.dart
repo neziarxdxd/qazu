@@ -15,13 +15,15 @@ class AddQuestionPage extends StatefulWidget {
   final String title;
   final String description;
   final double duration;
+  final String examCode;
 
   const AddQuestionPage(
       {Key? key,
       required this.quizId,
       required this.title,
       required this.description,
-      required this.duration})
+      required this.duration,
+      required this.examCode})
       : super(key: key);
 
   @override
@@ -51,7 +53,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
     box = Hive.box("quizzes");
     boxQuestions = Hive.box("questionsAndAnswers");
 
-    listQuiz = quizDB.getQuestionsToQuiz(widget.quizId);
+    listQuiz = quizDB.getQuestionByTeacher(widget.quizId);
     print("List Quiz: ${listQuiz.toString()}");
     print("ADD QUESTION Quiz ID: ${widget.quizId}");
   }
@@ -76,7 +78,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: const Text("Add Quiz"),
+                  title: const Text("Add Question"),
                   content: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -135,7 +137,8 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                 /// get the existing questions
 
                                 // add the new question to the existing questions
-
+                                print(
+                                    "LORD help me to this huhuh ${widget.examCode}");
                                 quizDB.addQuestionToQuiz(
                                     widget.quizId,
                                     QuestionAnswerModel(
@@ -145,6 +148,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                       option2: controllerOpt2.text,
                                       option3: controllerOpt3.text,
                                       quizId: widget.quizId,
+                                      examCode: widget.examCode,
                                     ));
 
                                 // print existing questions
@@ -154,12 +158,15 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                 // refresh the page
                                 setState(() {
                                   // refresh the page
-                                  listQuiz =
-                                      quizDB.getQuestionsToQuiz(widget.quizId);
+                                  listQuiz = quizDB
+                                      .getQuestionByTeacher(widget.quizId);
                                   print(
                                       "ADD QUESTION Quiz ID XXX: ${widget.quizId}");
                                   listQuiz.then((value) {
-                                    print("List Quiz: ${value.toString()}");
+                                    for (var item in value) {
+                                      print(
+                                          "QuestionEXAMCODE: ${item.examCode}");
+                                    }
                                   });
                                 });
                                 // clear the text fields
@@ -355,7 +362,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                             setState(() {
                                               // refresh the page
                                               listQuiz =
-                                                  quizDB.getQuestionsToQuiz(
+                                                  quizDB.getQuestionByTeacher(
                                                       widget.quizId);
                                             });
                                           },

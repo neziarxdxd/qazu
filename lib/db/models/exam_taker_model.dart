@@ -33,4 +33,9 @@ class ExamTakerModel {
       this.finishedTime,
       this.score,
       this.examCode});
+
+  @override
+  String toString() {
+    return 'ExamTakerModel{email: $email, studentKeyID: $studentKeyID, fullName: $fullName, quizID: $quizID, quizTitle: $quizTitle, quizDescription: $quizDescription, finishedTime: $finishedTime, score: $score, examCode: $examCode}';
+  }
 }
