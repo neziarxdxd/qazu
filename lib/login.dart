@@ -31,12 +31,17 @@ class _LoginAccountsState extends State<LoginAccounts> {
     accountSettings.getAccounts().then((value) {
       listUsers = value;
     });
+    // auto refresh
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // auto refresh
+    accountSettings.getAccounts().then((value) {
+      listUsers = value;
+    });
     return Scaffold(
       // appbar with timer with number in right and back button at left no color
       // Hex color FAFAFA for background

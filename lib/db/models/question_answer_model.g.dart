@@ -26,13 +26,14 @@ class QuestionAnswerModelAdapter extends TypeAdapter<QuestionAnswerModel> {
       option4: fields[6] as String?,
       quizId: fields[7] as int?,
       points: fields[8] as int?,
+      examCode: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, QuestionAnswerModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class QuestionAnswerModelAdapter extends TypeAdapter<QuestionAnswerModel> {
       ..writeByte(7)
       ..write(obj.quizId)
       ..writeByte(8)
-      ..write(obj.points);
+      ..write(obj.points)
+      ..writeByte(9)
+      ..write(obj.examCode);
   }
 
   @override

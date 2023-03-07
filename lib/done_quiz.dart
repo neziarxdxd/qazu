@@ -25,16 +25,7 @@ class _DoneQuizState extends State<DoneQuiz> {
           // Image
           Image(image: AssetImage("assets/images/done.png"), height: 150),
           Text("Done"),
-          TextButton(
-              onPressed: () {
-                // go to home
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => QuizListStudents()));
-              },
-              child: Text(
-                  "Go to Home\n Score: ${widget.score}\n Wrong: ${widget.wrong}"))
+          Text("Go to Home\n Score: ${widget.score}\n Wrong: ${widget.wrong}")
         ],
       ),
     ));

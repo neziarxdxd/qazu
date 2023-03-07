@@ -77,7 +77,7 @@ class QuizDB {
       print("QUESTION 77 ${questionModel.examCode}");
       print("QUESTION 78 ${questionModel.toString()}");
       if (questionModel.examCode == examCode) {
-        questions.add(box.getAt(i)!);
+        questions.add(questionModel);
       }
     }
     // print all questions
@@ -135,6 +135,7 @@ class QuizDB {
       option4: question.option4,
       quizId: question.quizId,
       points: question.points,
+      examCode: question.examCode,
     );
     print("Line 112: Key: $key");
     print("Line 113: Updated question: ${questionModel.toString()}");

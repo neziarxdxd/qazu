@@ -54,8 +54,12 @@ class ExamTakerDB {
   bool checkIfAccessCodeIsAdded(String accessCode, String email) {
     // box is ExamTakerModel
     var box = Hive.box('examTakers');
+    print("Access Code: $accessCode");
+    print("Email: $email");
     bool isAdded = false;
     for (int i = 0; i < box.length; i++) {
+      print("61 Aceess Code: ${box.getAt(i)!.examCode}");
+      print("62 Email: ${box.getAt(i)!.email}");
       if (box.getAt(i)!.email == email &&
           box.getAt(i)!.examCode == accessCode) {
         isAdded = true;

@@ -97,10 +97,7 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                     ButtonCustom(
                       text: "Enter Access Code",
                       onPressed: () {
-                        if (_formKey.currentState!.validate() &&
-                            (!checkExamCode(controllerExamCode.text) &&
-                                (!checkIfQuizExists(
-                                    controllerExamCode.text)))) {
+                        if (_formKey.currentState!.validate()) {
                           print("Add Quiz");
                           examTakerDB.addExamTaker(ExamTakerModel(
                             finishedTime: 2,
@@ -228,16 +225,27 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                           onTap: () {
                             print(
                                 "Quiz!XD ID: ${snapshot.data![index].toString()}");
+                            print('''MyWidget: ${MyWidget(
+                              fullNameTaker: widget.fullNameTaker ?? '',
+                              studentKeyID: widget.studentKeyID ?? 0,
+                              examCode: snapshot.data![index].examCode!,
+                              duration: 10,
+                              emailTaker: widget.emailTaker ?? '',
+                              quizDescription:
+                                  snapshot.data![index].quizID ?? '',
+                              quizTitle: snapshot.data![index].quizTitle ?? '',
+                            )}
+                              
+                            ''');
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MyWidget(
-                                  examCode: snapshot.data![index].examCode ??
-                                      "No Exam Code",
-                                  duration: 0,
-                                  emailTaker: widget.emailTaker ?? '',
                                   fullNameTaker: widget.fullNameTaker ?? '',
                                   studentKeyID: widget.studentKeyID ?? 0,
+                                  examCode: snapshot.data![index].examCode!,
+                                  duration: 10,
+                                  emailTaker: widget.emailTaker ?? '',
                                   quizDescription:
                                       snapshot.data![index].quizID ?? '',
                                   quizTitle:
@@ -246,7 +254,7 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                               ),
                             );
                           },
-                          title: Text(snapshot.data![index].studentKeyID!),
+                          title: Text(snapshot.data![index].fullName!),
                           // score with is done or not with icon
                           trailing: Text(widget.studentKeyID.toString()),
                           // exam code

@@ -339,6 +339,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                                     option3:
                                                         controllerOpt3.text,
                                                     quizId: widget.quizId,
+                                                    examCode: widget.examCode,
                                                   ));
                                               // snckbar
                                               ScaffoldMessenger.of(context)

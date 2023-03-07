@@ -3,8 +3,10 @@ import 'package:qazu/db/models/exam_taker_model.dart';
 import 'package:qazu/db/models/question_answer_model.dart';
 import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/done_quiz.dart';
+import 'package:quiver/async.dart';
 
 import 'db/models/exam_taker_db.dart';
+// import quiver
 
 class MyWidget extends StatefulWidget {
   // key
@@ -42,6 +44,7 @@ class _MyWidgetState extends State<MyWidget> {
   // score
   int score = 0;
   int wrong = 0;
+  int? seconds;
   @override
   void initState() {
     // TODO: implement initState
@@ -58,7 +61,7 @@ class _MyWidgetState extends State<MyWidget> {
       setState(() {
         print("value: $value");
         print("value length: ${value.length}");
-        print("value: ${value[0].question}");
+
         questionAnswerModel = value;
       });
     });
@@ -67,6 +70,9 @@ class _MyWidgetState extends State<MyWidget> {
     // increase wrong if answer is wrong
 
     super.initState();
+
+    seconds = 60;
+    // startTimer();
   }
 
   @override
@@ -96,7 +102,7 @@ class _MyWidgetState extends State<MyWidget> {
         .toList();
     // randomize options from the index of the question
     List randomOptions = options[questionIndex];
-    randomOptions = randomOptions..shuffle();
+    randomOptions.shuffle();
     return Scaffold(
         // appbar with timer with number in right and back button at left no color
         // Hex color FAFAFA for background
@@ -141,7 +147,7 @@ class _MyWidgetState extends State<MyWidget> {
                     style: TextStyle(
                         color: Color.fromARGB(255, 179, 171, 213),
                         fontWeight: FontWeight.bold)),
-                Text("50:00", style: TextStyle(color: Colors.grey)),
+                Text("Time: $seconds", style: TextStyle(color: Colors.grey)),
               ],
             ),
             SizedBox(
@@ -172,8 +178,6 @@ class _MyWidgetState extends State<MyWidget> {
                     // reset selected option
                     selected = 0;
                   } else {
-                    examTakerDB.addExamTaker(ExamTakerModel());
-
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -210,4 +214,20 @@ class _MyWidgetState extends State<MyWidget> {
           ]),
         ));
   }
+
+  // void startTimer() {
+  //   CountdownTimer(Duration(seconds: seconds!), Duration(seconds: 1))
+  //       .listen((data) {})
+  //     ..onData((data) {
+  //       setState(() {
+  //         // decrease seconds
+  //         seconds = seconds! - 1;
+  //       });
+  //     })
+  //     ..onDone(() {
+  //       setState(() {
+  //         seconds = 0;
+  //       });
+  //     });
+  // }
 }
