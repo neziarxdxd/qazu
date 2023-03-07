@@ -167,14 +167,14 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                   child: TextFormField(
                     // password should be 16 characters and above, should contain letters, numbers, special characters and uppercase
                     validator: (value) {
-                      if (value!.length >= 12 &&
+                      if (value!.length >= 8 &&
                           value.contains(RegExp(r'[A-Z]')) &&
                           value.contains(RegExp(r'[a-z]')) &&
                           value.contains(RegExp(r'[0-9]')) &&
                           value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                         return null;
                       } else {
-                        return 'Password should be 16 characters and above';
+                        return 'Password should be 8 characters and above';
                       }
                     },
 

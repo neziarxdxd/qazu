@@ -6,6 +6,7 @@ import 'package:qazu/db/models/exam_taker_db.dart';
 import 'package:qazu/db/models/exam_taker_model.dart';
 import 'package:qazu/db/models/quiz_model.dart';
 import 'package:qazu/db/quiz_add.dart';
+import 'package:qazu/login.dart';
 import 'package:qazu/quiz_app.dart';
 
 class QuizListStudents extends StatefulWidget {
@@ -163,9 +164,9 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AccountSetting()));
+                        builder: (context) => const LoginAccounts()));
               },
-              title: const Text("Account Settings"),
+              title: const Text("Logout"),
             ),
           ],
         ),

@@ -22,7 +22,8 @@ class _ListAccountsState extends State<ListAccounts> {
   TextEditingController controllerLastName = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
-
+  final String type = "Student";
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
@@ -92,90 +93,121 @@ class _ListAccountsState extends State<ListAccounts> {
                                 builder: (context) {
                                   return AlertDialog(
                                     title: const Text("Edit Account"),
-                                    content: Container(
-                                      height: 300,
-                                      child: Column(
-                                        children: [
-                                          TextField(
-                                            controller: controllerFirstName =
-                                                TextEditingController(
-                                                    text: snapshot.data![index]
-                                                        .firstName),
-                                            decoration: const InputDecoration(
-                                              labelText: "First Name",
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: controllerLastName =
-                                                TextEditingController(
-                                                    text: snapshot
-                                                        .data![index].lastName),
-                                            decoration: const InputDecoration(
-                                              labelText: "Last Name",
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: controllerEmail =
-                                                TextEditingController(
-                                                    text: snapshot
-                                                        .data![index].email),
-                                            decoration: const InputDecoration(
-                                              labelText: "Email",
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: controllerPassword =
-                                                TextEditingController(
-                                                    text: snapshot
-                                                        .data![index].password),
-                                            decoration: const InputDecoration(
-                                              labelText: "Password",
-                                            ),
-                                          ),
-                                          // DropdownButton is used to display the list of accounts
-                                          DropdownButton(
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: Text("Admin"),
-                                                value: "Admin",
+                                    content: Form(
+                                      key: formKey,
+                                      child: Container(
+                                        height: 300,
+                                        child: Column(
+                                          children: [
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Please enter a first name";
+                                                }
+                                                return null;
+                                              },
+                                              controller: controllerFirstName =
+                                                  TextEditingController(
+                                                      text: snapshot
+                                                          .data![index]
+                                                          .firstName),
+                                              decoration: const InputDecoration(
+                                                labelText: "First Name",
                                               ),
-                                              DropdownMenuItem(
-                                                child: Text("User"),
-                                                value: "User",
+                                            ),
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Please enter a last name";
+                                                }
+                                                return null;
+                                              },
+                                              controller: controllerLastName =
+                                                  TextEditingController(
+                                                      text: snapshot
+                                                          .data![index]
+                                                          .lastName),
+                                              decoration: const InputDecoration(
+                                                labelText: "Last Name",
                                               ),
-                                            ],
-                                            onChanged: (String? value) {},
-                                          ),
-                                        ],
+                                            ),
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Please enter an email";
+                                                }
+                                                return null;
+                                              },
+                                              controller: controllerEmail =
+                                                  TextEditingController(
+                                                      text: snapshot
+                                                          .data![index].email),
+                                              decoration: const InputDecoration(
+                                                labelText: "Email",
+                                              ),
+                                            ),
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value!.length >= 8 &&
+                                                    value.contains(
+                                                        RegExp(r'[A-Z]')) &&
+                                                    value.contains(
+                                                        RegExp(r'[a-z]')) &&
+                                                    value.contains(
+                                                        RegExp(r'[0-9]')) &&
+                                                    value.contains(RegExp(
+                                                        r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                                  return null;
+                                                } else {
+                                                  return 'Password should be 8 characters and above';
+                                                }
+                                              },
+                                              controller: controllerPassword =
+                                                  TextEditingController(
+                                                      text: snapshot
+                                                          .data![index]
+                                                          .password),
+                                              decoration: const InputDecoration(
+                                                labelText: "Password",
+                                              ),
+                                            ),
+                                            // DropdownButton is used to display the list of accounts
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     actions: [
                                       TextButton(
-                                        onPressed: () {
-                                          // update the account
-                                          accountSettings.updateAccountById(
-                                              // get the key of the account
-                                              box.keyAt(index),
-                                              UserModel(
-                                                id: 0,
-                                                firstName:
-                                                    controllerFirstName.text,
-                                                lastName:
-                                                    controllerLastName.text,
-                                                email: controllerEmail.text,
-                                                password:
-                                                    controllerPassword.text,
-                                              ));
-                                          // close the dialog
-                                          Navigator.pop(context);
-                                          // refresh the listq
-                                          setState(() {
-                                            list =
-                                                accountSettings.getAccounts();
-                                          });
-                                        },
-                                        child: const Text("Update"),
-                                      ),
+                                          onPressed: () {
+                                            // update the account
+                                            if (formKey.currentState!
+                                                .validate()) {
+                                              accountSettings.updateAccountById(
+                                                  // get the key of the account
+                                                  box.keyAt(index),
+                                                  UserModel(
+                                                    id: 0,
+                                                    firstName:
+                                                        controllerFirstName
+                                                            .text,
+                                                    lastName:
+                                                        controllerLastName.text,
+                                                    email: controllerEmail.text,
+                                                    password:
+                                                        controllerPassword.text,
+                                                    type: snapshot
+                                                        .data![index].type,
+                                                  ));
+                                              // close the dialog
+                                              Navigator.pop(context);
+                                              // refresh the listq
+                                              setState(() {
+                                                list = accountSettings
+                                                    .getAccounts();
+                                              });
+                                            }
+                                          },
+                                          child: const Text("Update")),
                                       TextButton(
                                         onPressed: () {
                                           // close the dialog

@@ -146,7 +146,7 @@ class _LoginAccountsState extends State<LoginAccounts> {
                         String emailTaker = listUsers[index].email!;
                         print("email: $email");
 
-                        if (getRole == 'teacher') {
+                        if (getRole.toLowerCase() == 'teacher') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
