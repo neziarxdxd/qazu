@@ -143,21 +143,10 @@ class _QuizListStudentsState extends State<QuizListStudents> {
             ),
             ListTile(
               onTap: () {
-                // Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => const QuizListStudents()));
+                // hide the drawer
+                Navigator.pop(context);
               },
               title: const Text("Quizzes"),
-            ),
-            ListTile(
-              onTap: () {
-                // Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => const QuizListStudents()));
-              },
-              title: const Text("Done Quizzes"),
             ),
             ListTile(
               onTap: () {
@@ -179,6 +168,7 @@ class _QuizListStudentsState extends State<QuizListStudents> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             print("Line 155 ${snapshot.data!.toString()}");
+
             return snapshot.data!.isEmpty
                 ? const Center(
                     child: Text("Empty"),
@@ -187,6 +177,10 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       // make it dismissible
+                      final isQuizDone =
+                          examTakerDB.isDoneExamByAccessCodeAndEmail(
+                              snapshot.data![index].examCode!,
+                              widget.emailTaker!);
                       return Dismissible(
                         background: Container(
                           color: Colors.red,
@@ -224,40 +218,53 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                         },
                         child: ListTile(
                           onTap: () {
-                            print(
-                                "Quiz!XD ID: ${snapshot.data![index].toString()}");
-                            print('''MyWidget: ${MyWidget(
-                              fullNameTaker: widget.fullNameTaker ?? '',
-                              studentKeyID: widget.studentKeyID ?? 0,
-                              examCode: snapshot.data![index].examCode!,
-                              duration: 10,
-                              emailTaker: widget.emailTaker ?? '',
-                              quizDescription:
-                                  snapshot.data![index].quizID ?? '',
-                              quizTitle: snapshot.data![index].quizTitle ?? '',
-                            )}
-                              
-                            ''');
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyWidget(
-                                  fullNameTaker: widget.fullNameTaker ?? '',
-                                  studentKeyID: widget.studentKeyID ?? 0,
-                                  examCode: snapshot.data![index].examCode!,
-                                  duration: 10,
-                                  emailTaker: widget.emailTaker ?? '',
-                                  quizDescription:
-                                      snapshot.data![index].quizID ?? '',
-                                  quizTitle:
-                                      snapshot.data![index].quizTitle ?? '',
-                                ),
-                              ),
-                            );
+                            (quizDB.isQuizHasQuestions(
+                                        snapshot.data![index].examCode!) &&
+                                    !isQuizDone)
+                                ? Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => MyWidget(
+                                        score: 0,
+                                        fullNameTaker:
+                                            widget.fullNameTaker ?? '',
+                                        studentKeyID: widget.studentKeyID ?? 0,
+                                        examCode:
+                                            snapshot.data![index].examCode!,
+                                        duration: 10,
+                                        emailTaker: widget.emailTaker ?? '',
+                                        quizDescription:
+                                            snapshot.data![index].quizID ?? '',
+                                        quizTitle:
+                                            snapshot.data![index].quizTitle ??
+                                                '',
+                                      ),
+                                    ),
+                                  )
+                                : isQuizDone
+                                    ? ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                "You have already done this quiz")))
+                                    : ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                "This quiz is not available")));
                           },
                           title: Text(snapshot.data![index].fullName!),
                           // score with is done or not with icon
-                          trailing: Text(widget.studentKeyID.toString()),
+                          trailing: Icon(
+                            quizDB.isQuizHasQuestions(
+                                    snapshot.data![index].examCode!)
+                                ? snapshot.data![index].isDone == "yes"
+                                    ? Icons.done_outline
+                                    : Icons.open_in_new
+                                : Icons.lock,
+                            color: quizDB.isQuizHasQuestions(
+                                    snapshot.data![index].examCode!)
+                                ? Colors.blue
+                                : Colors.black54,
+                          ),
                           // exam code
                           subtitle: Text(
                               "ExamCode: ${snapshot.data![index].examCode.toString()}"),

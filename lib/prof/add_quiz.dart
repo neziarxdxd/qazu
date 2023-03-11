@@ -6,6 +6,7 @@ import 'package:qazu/button.dart';
 import 'package:qazu/db/models/quiz_model.dart';
 import 'package:qazu/db/quiz_add.dart';
 import 'package:qazu/prof/add_questions.dart';
+import 'package:qazu/prof/view_finished_exam.dart';
 
 class AddQuizPage extends StatefulWidget {
   const AddQuizPage({super.key});
@@ -212,8 +213,24 @@ class _AddQuizPageState extends State<AddQuizPage> {
                               ),
                             );
                           },
+                          trailing: IconButton(
+                            onPressed: () {
+                              // show the finished quiz
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ViewFinishedExam(
+                                    examCode: snapshot.data![index].examCode!,
+                                  ),
+                                ),
+                              );
+                              print("Show finished quiz");
+                            },
+                            icon:
+                                const Icon(Icons.supervised_user_circle_sharp),
+                          ),
                           title: Text(snapshot.data![index].title!),
-                          trailing: Text(
+                          subtitle: Text(
                               "${snapshot.data![index].duration.toString()} minutes"),
                         ),
                       );

@@ -173,4 +173,27 @@ class QuizDB {
     }
     return isAdded;
   }
+
+  bool isQuizHasQuestions(String accessCode) {
+    var box = Hive.box('questionsAndAnswers');
+    bool isAdded = false;
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.examCode == accessCode) {
+        isAdded = true;
+      }
+    }
+    return isAdded;
+  }
+
+  // get Specific Quiz based on exam code
+  Future<QuizModel> getSpecificQuiz(String accessCode) async {
+    final box = await Hive.openBox('quizzes');
+    QuizModel quiz = QuizModel();
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.examCode == accessCode) {
+        quiz = box.getAt(i)!;
+      }
+    }
+    return quiz;
+  }
 }

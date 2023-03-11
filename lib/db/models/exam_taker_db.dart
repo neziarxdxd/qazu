@@ -67,4 +67,45 @@ class ExamTakerDB {
     }
     return isAdded;
   }
+
+  // update exam taker score and if the exam is taken
+  void examTakerDone(String accessCode, String email, double score) async {
+    var box = Hive.box('examTakers');
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.email == email &&
+          box.getAt(i)!.examCode == accessCode) {
+        box.getAt(i)!.score = score;
+        box.getAt(i)!.isDone = "yes";
+        box.putAt(i, box.getAt(i)!);
+        print("Exam Taker Done: ${box.getAt(i)!}");
+      }
+    }
+  }
+
+  // get all who took the exam by exam code
+  Future<List<ExamTakerModel>> getAllWhoTookTheExamByExamCode(
+      String examCode) async {
+    var box = Hive.box('examTakers');
+    List<ExamTakerModel> examTakerDB = [];
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.examCode == examCode) {
+        examTakerDB.add(box.getAt(i)!);
+      }
+    }
+    return examTakerDB;
+  }
+
+  bool isDoneExamByAccessCodeAndEmail(String accessCode, String email) {
+    var box = Hive.box('examTakers');
+    bool isDone = false;
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.email == email &&
+          box.getAt(i)!.examCode == accessCode) {
+        if (box.getAt(i)!.isDone == "yes") {
+          isDone = true;
+        }
+      }
+    }
+    return isDone;
+  }
 }

@@ -18,6 +18,7 @@ class MyWidget extends StatefulWidget {
   final String quizTitle;
   final String quizDescription;
   final double duration;
+  final int score;
   const MyWidget(
       {super.key,
       required this.examCode,
@@ -26,7 +27,8 @@ class MyWidget extends StatefulWidget {
       required this.studentKeyID,
       required this.quizTitle,
       required this.quizDescription,
-      required this.duration});
+      required this.duration,
+      required this.score});
 
   @override
   State<MyWidget> createState() => _MyWidgetState();
@@ -45,6 +47,7 @@ class _MyWidgetState extends State<MyWidget> {
   int score = 0;
   int wrong = 0;
   int? seconds;
+  String? description;
   @override
   void initState() {
     // TODO: implement initState
@@ -63,6 +66,12 @@ class _MyWidgetState extends State<MyWidget> {
         print("value length: ${value.length}");
 
         questionAnswerModel = value;
+      });
+    });
+    quizDB.getSpecificQuiz(widget.examCode).then((value) {
+      setState(() {
+        title = value.title!;
+        description = value.description!;
       });
     });
 
@@ -117,7 +126,7 @@ class _MyWidgetState extends State<MyWidget> {
             size: 20,
           ),
           title: Text(
-            'Software Engineering ',
+            title,
             style: TextStyle(
                 fontSize: 15,
                 color: Color.fromARGB(255, 47, 46, 46),
@@ -143,7 +152,7 @@ class _MyWidgetState extends State<MyWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("sdsd",
+                Text(description!,
                     style: TextStyle(
                         color: Color.fromARGB(255, 179, 171, 213),
                         fontWeight: FontWeight.bold)),
@@ -178,10 +187,18 @@ class _MyWidgetState extends State<MyWidget> {
                     // reset selected option
                     selected = 0;
                   } else {
-                    Navigator.push(
+                    examTakerDB.examTakerDone(
+                      widget.examCode,
+                      widget.emailTaker,
+                      score.toDouble(),
+                    );
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => DoneQuiz(
+                                  emailTaker: widget.emailTaker,
+                                  fullNameTaker: widget.fullNameTaker,
+                                  studentKeyID: widget.studentKeyID,
                                   score: score,
                                   wrong: wrong,
                                 )));

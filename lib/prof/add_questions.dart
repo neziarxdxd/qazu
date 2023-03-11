@@ -196,7 +196,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
           if (snapshot.hasData) {
             return snapshot.data!.isEmpty
                 ? const Center(
-                    child: Text("Just press the + button to add a quiz"),
+                    child: Text("Just press the + button to add a questions"),
                   )
                 : ListView.builder(
                     itemCount: snapshot.data!.length,

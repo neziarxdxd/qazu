@@ -26,13 +26,14 @@ class ExamTakerModelAdapter extends TypeAdapter<ExamTakerModel> {
       finishedTime: fields[6] as double?,
       score: fields[7] as double?,
       examCode: fields[8] as String?,
+      isDone: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ExamTakerModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.email)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class ExamTakerModelAdapter extends TypeAdapter<ExamTakerModel> {
       ..writeByte(7)
       ..write(obj.score)
       ..writeByte(8)
-      ..write(obj.examCode);
+      ..write(obj.examCode)
+      ..writeByte(9)
+      ..write(obj.isDone);
   }
 
   @override

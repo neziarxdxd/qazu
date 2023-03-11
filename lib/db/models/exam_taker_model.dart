@@ -22,20 +22,23 @@ class ExamTakerModel {
   double? score;
   @HiveField(8)
   String? examCode;
-
-  ExamTakerModel(
-      {this.email,
-      this.studentKeyID,
-      this.fullName,
-      this.quizID,
-      this.quizTitle,
-      this.quizDescription,
-      this.finishedTime,
-      this.score,
-      this.examCode});
+  @HiveField(9)
+  String? isDone;
+  ExamTakerModel({
+    this.email,
+    this.studentKeyID,
+    this.fullName,
+    this.quizID,
+    this.quizTitle,
+    this.quizDescription,
+    this.finishedTime,
+    this.score,
+    this.examCode,
+    this.isDone,
+  });
 
   @override
   String toString() {
-    return 'ExamTakerModel{email: $email, studentKeyID: $studentKeyID, fullName: $fullName, quizID: $quizID, quizTitle: $quizTitle, quizDescription: $quizDescription, finishedTime: $finishedTime, score: $score, examCode: $examCode}';
+    return 'ExamTakerModel{email: $email, studentKeyID: $studentKeyID, fullName: $fullName, quizID: $quizID, quizTitle: $quizTitle, quizDescription: $quizDescription, finishedTime: $finishedTime, score: $score, examCode: $examCode , isDone: $isDone}';
   }
 }
