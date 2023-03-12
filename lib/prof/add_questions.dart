@@ -53,13 +53,15 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
     box = Hive.box("quizzes");
     boxQuestions = Hive.box("questionsAndAnswers");
 
-    listQuiz = quizDB.getQuestionByTeacher(widget.quizId);
+    listQuiz = quizDB.getQuestionByExamCode(widget.examCode);
     print("List Quiz: ${listQuiz.toString()}");
     print("ADD QUESTION Quiz ID: ${widget.quizId}");
   }
 
   String? validationMessage(String value) {
-    if ((value == conrollerAnswer.text) && value == conrollerAnswer.text) {
+    print("VALIDATION62: $value");
+    print("VALIDATION63: ${conrollerAnswer.text}");
+    if (value == conrollerAnswer.text) {
       return "Answer should not be the same as the options";
     }
     if (value.isEmpty) {
@@ -159,7 +161,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                 setState(() {
                                   // refresh the page
                                   listQuiz = quizDB
-                                      .getQuestionByTeacher(widget.quizId);
+                                      .getQuestionByExamCode(widget.examCode);
                                   print(
                                       "ADD QUESTION Quiz ID XXX: ${widget.quizId}");
                                   listQuiz.then((value) {
@@ -232,9 +234,12 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                         key: UniqueKey(),
                         onDismissed: (direction) {
                           // delete the quiz
+                          quizDB.deleteQuestionByExamCode(widget.examCode);
 
                           setState(() {
                             // refresh the page
+                            listQuiz =
+                                quizDB.getQuestionByExamCode(widget.examCode);
                           });
                         },
                         child: ListTile(
@@ -264,7 +269,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                         // Answer
                                         TextFormField(
                                           validator: (value) => value!.isEmpty
-                                              ? "Answer is required"
+                                              ? "Answer is requiredXD"
                                               : null,
                                           controller: conrollerAnswer =
                                               TextEditingController(
@@ -276,9 +281,8 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                         ),
                                         // Option 1
                                         TextFormField(
-                                          validator: (value) => value!.isEmpty
-                                              ? "Option 1 is required"
-                                              : null,
+                                          validator: (value) =>
+                                              validationMessage(value!),
                                           controller: controllerOpt1 =
                                               TextEditingController(
                                                   text: snapshot
@@ -363,8 +367,8 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                                             setState(() {
                                               // refresh the page
                                               listQuiz =
-                                                  quizDB.getQuestionByTeacher(
-                                                      widget.quizId);
+                                                  quizDB.getQuestionByExamCode(
+                                                      widget.examCode);
                                             });
                                           },
                                         )

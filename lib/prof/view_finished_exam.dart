@@ -79,49 +79,13 @@ class _ViewFinishedExamState extends State<ViewFinishedExam> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       // make it dismissible
-                      return Dismissible(
-                        background: Container(
-                          color: Colors.red,
-                          child: const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                      return ListTile(
+                        trailing: Text(
+                          "Score: ${snapshot.data![index].score == null ? "0" : snapshot.data![index].score!.toInt().toString()}",
                         ),
-                        secondaryBackground: Container(
-                          color: Colors.red,
-                          child: const Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 10),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        key: UniqueKey(),
-                        onDismissed: (direction) {
-                          // delete the quiz
-
-                          setState(() {
-                            // refresh the page
-                          });
-                        },
-                        child: ListTile(
-                          trailing: Text(
-                            "Score: ${snapshot.data![index].score == null ? "0" : snapshot.data![index].score!.toInt().toString()}",
-                          ),
-                          title: Text(snapshot.data![index].fullName!),
-                          subtitle: Text(
-                              "${snapshot.data![index].email.toString()} "),
-                        ),
+                        title: Text(snapshot.data![index].fullName!),
+                        subtitle:
+                            Text("${snapshot.data![index].email.toString()} "),
                       );
                     },
                   );

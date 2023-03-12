@@ -58,6 +58,26 @@ class _ListAccountsState extends State<ListAccounts> {
                     itemBuilder: (context, index) {
                       // make it dismissible
                       return Dismissible(
+                        confirmDismiss: (direction) => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Confirm"),
+                            content: const Text(
+                                "Are you sure you want to delete this account?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: const Text("Yes"),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text("No"),
+                              ),
+                            ],
+                          ),
+                        ),
                         background: Container(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -220,6 +240,16 @@ class _ListAccountsState extends State<ListAccounts> {
                                 },
                               );
                             },
+                            trailing: Column(
+                              children: [
+                                Icon(
+                                  snapshot.data![index].type == "student"
+                                      ? Icons.account_box_rounded
+                                      : Icons.school_sharp,
+                                ),
+                                Text(snapshot.data![index].type.toString()),
+                              ],
+                            ),
                             title: Text(
                                 "${snapshot.data![index].firstName}  ${snapshot.data![index].lastName}"),
                             // display the Key of the account

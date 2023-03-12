@@ -28,6 +28,19 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
     accountSettings = Accounts();
   }
 
+  bool isEmailExist(String email) {
+    return accountSettings.isEmailAccountExist(email);
+  }
+
+  bool checkIfHasEmail(String email) {
+    // remove excess spaces
+    email = email.trim();
+    // rempve @ccc.edu.ph
+    email = email.replaceAll("@ccc.edu.ph", "");
+    // check if it is not empty
+    return email.isNotEmpty;
+  }
+
   Widget build(BuildContext context) {
     TextEditingController controllerFirstName = TextEditingController();
     TextEditingController controllerLastName = TextEditingController();
@@ -143,8 +156,14 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                   child: TextFormField(
                     // if no @cca.edu.ph it is invalid
                     validator: (value) {
-                      if (value!.contains('@ccc.edu.ph')) {
-                        return null;
+                      if (isEmailExist(value!)) {
+                        return 'Email already exist';
+                      } else if (value.contains('@ccc.edu.ph')) {
+                        if (checkIfHasEmail(value)) {
+                          return null;
+                        } else {
+                          return 'Please enter a valid email';
+                        }
                       } else {
                         return 'Please enter a valid email';
                       }
@@ -186,7 +205,7 @@ class _AdminAccountPageState extends State<AdminAccountPage> {
                       //     numbers: true,
                       //     uppercase: true,
                       //     specialChar: true)),
-                      text: "Password123456!",
+                      text: "Password123!",
                     ),
 
                     decoration: InputDecoration(

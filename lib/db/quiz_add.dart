@@ -15,6 +15,7 @@ class QuizDB {
       title: quiz.title,
       description: quiz.description,
       duration: quiz.duration,
+      teacherEmail: quiz.teacherEmail,
     );
     // add the quiz to the box
     await box.add(quizModel);
@@ -40,6 +41,52 @@ class QuizDB {
     }
 
     return quizzes;
+  }
+
+  // get Quizzes by Teacher
+  Future<List<QuizModel>> getQuizzesByTeacher(String teacherEmail) async {
+    final box = await Hive.openBox('quizzes');
+    // let all the quizzes be a list of QuizModel objects
+    List<QuizModel> quizzes = [];
+    // loop through the box and add each quiz to the list
+    for (int i = 0; i < box.length; i++) {
+      print(
+          "Quiz 53XD ${i + 1}: ${box.getAt(i)!.teacherEmail} ${box.getAt(i)!.description}");
+
+      QuizModel quizModel = box.getAt(i)!;
+      if (quizModel.teacherEmail == teacherEmail) {
+        quizzes.add(quizModel);
+      }
+    }
+    // print all quizzes
+    for (int i = 0; i < quizzes.length; i++) {
+      print("Quiz ${i + 1}: ${quizzes[i].description}");
+    }
+
+    // print keys
+    for (int i = 0; i < box.length; i++) {
+      print(" ${box.keyAt(i)}");
+    }
+
+    return quizzes;
+  }
+
+  // Delte Quiz by Exam Code
+  Future<void> deleteQuizByExamCode(String examCode) async {
+    final box = await Hive.openBox('quizzes');
+
+    // loop through the box and add each quiz to the list
+    for (int i = 0; i < box.length; i++) {
+      print(
+          "Quiz 53XD ${i + 1}: ${box.getAt(i)!.teacherEmail} ${box.getAt(i)!.description}");
+
+      QuizModel quizModel = box.getAt(i)!;
+      if (quizModel.examCode == examCode) {
+        box.deleteAt(i);
+      }
+    }
+
+    // return quizzes;
   }
 
 //// ====================== Questions and Answers ======================
@@ -90,7 +137,8 @@ class QuizDB {
   }
 
   // get all questions to specific quiz
-  Future<List<QuestionAnswerModel>> getQuestionByTeacher(int quizID) async {
+  Future<List<QuestionAnswerModel>> getQuestionByExamCode(
+      String examCode) async {
     final box = await Hive.openBox('questionsAndAnswers');
 
     // let all the questions be a list of QuestionAnswerModel objects and filter by quizId
@@ -98,7 +146,7 @@ class QuizDB {
     // loop through the box and add each question to the list
     for (int i = 0; i < box.length; i++) {
       QuestionAnswerModel questionModel = box.getAt(i)!;
-      if (questionModel.quizId == quizID) {
+      if (questionModel.examCode == examCode) {
         questions.add(box.getAt(i)!);
       }
     }
@@ -109,6 +157,24 @@ class QuizDB {
     }
     // return questions
     return questions;
+  }
+
+  // delete specific question
+  Future<void> deleteQuestionByExamCode(String examCode) async {
+    final box = await Hive.openBox('questionsAndAnswers');
+
+    // loop through the box and add each quiz to the list
+    for (int i = 0; i < box.length; i++) {
+      print(
+          "Quiz 53XD ${i + 1}: ${box.getAt(i)!.teacherEmail} ${box.getAt(i)!.description}");
+
+      QuestionAnswerModel questionModel = box.getAt(i)!;
+      if (questionModel.examCode == examCode) {
+        box.deleteAt(i);
+      }
+    }
+
+    // return quizzes;
   }
 
   Future<QuestionAnswerModel> getSpecificQuestion(int key) async {
@@ -195,5 +261,16 @@ class QuizDB {
       }
     }
     return quiz;
+  }
+
+  bool isExamCodeExists(String examCode) {
+    var box = Hive.box('quizzes');
+    bool isAdded = false;
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.examCode == examCode) {
+        isAdded = true;
+      }
+    }
+    return isAdded;
   }
 }

@@ -9,7 +9,8 @@ import 'package:qazu/prof/add_questions.dart';
 import 'package:qazu/prof/view_finished_exam.dart';
 
 class AddQuizPage extends StatefulWidget {
-  const AddQuizPage({super.key});
+  const AddQuizPage({super.key, required this.teacherEmail});
+  final String teacherEmail;
 
   @override
   State<AddQuizPage> createState() => _AddQuizPageState();
@@ -34,7 +35,7 @@ class _AddQuizPageState extends State<AddQuizPage> {
     // open mydb then get the box accounts
     box = Hive.box("quizzes");
 
-    listQuiz = quizDB.getQuizzes();
+    listQuiz = quizDB.getQuizzesByTeacher(widget.teacherEmail);
   }
 
   // check if the exam code is already taken for validation text field
@@ -128,13 +129,15 @@ class _AddQuizPageState extends State<AddQuizPage> {
                                   duration:
                                       double.parse(controllerQuizDuration.text),
                                   examCode: controllerExamCode.text,
+                                  teacherEmail: widget.teacherEmail,
                                 );
                                 quizDB.createQuiz(quizModel);
                                 Navigator.pop(context);
                                 // refresh the page
                                 setState(() {
                                   // refresh the page
-                                  listQuiz = quizDB.getQuizzes();
+                                  listQuiz = quizDB
+                                      .getQuizzesByTeacher(widget.teacherEmail);
                                 });
                               }
                             },
@@ -198,40 +201,96 @@ class _AddQuizPageState extends State<AddQuizPage> {
                             // refresh the page
                           });
                         },
-                        child: ListTile(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddQuestionPage(
-                                    quizId: box.keyAt(index),
-                                    description:
-                                        snapshot.data![index].description!,
-                                    title: snapshot.data![index].title!,
-                                    duration: snapshot.data![index].duration!,
-                                    examCode: snapshot.data![index].examCode!),
-                              ),
+                        child: Dismissible(
+                          confirmDismiss: (direction) async {
+                            return await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Confirm"),
+                                  content: const Text(
+                                      "Are you sure you wish to delete this item?"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text("DELETE")),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text("CANCEL"),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                          trailing: IconButton(
-                            onPressed: () {
-                              // show the finished quiz
+                          onDismissed: (direction) => {
+                            // delete the quiz
+                            quizDB.deleteQuizByExamCode(
+                                snapshot.data![index].examCode!),
+
+                            setState(() {
+                              // refresh the page
+                              listQuiz = quizDB
+                                  .getQuizzesByTeacher(widget.teacherEmail);
+                            }),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Quiz Deleted!"),
+                              ),
+                            ),
+                          },
+                          background: Container(
+                            color: Colors.red,
+                            child: const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          key: UniqueKey(),
+                          child: ListTile(
+                            onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ViewFinishedExam(
-                                    examCode: snapshot.data![index].examCode!,
-                                  ),
+                                  builder: (context) => AddQuestionPage(
+                                      quizId: box.keyAt(index),
+                                      description:
+                                          snapshot.data![index].description!,
+                                      title: snapshot.data![index].title!,
+                                      duration: snapshot.data![index].duration!,
+                                      examCode:
+                                          snapshot.data![index].examCode!),
                                 ),
                               );
-                              print("Show finished quiz");
                             },
-                            icon:
-                                const Icon(Icons.supervised_user_circle_sharp),
+                            trailing: IconButton(
+                              onPressed: () {
+                                // show the finished quiz
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewFinishedExam(
+                                      examCode: snapshot.data![index].examCode!,
+                                    ),
+                                  ),
+                                );
+                                print("Show finished quiz");
+                              },
+                              icon: const Icon(
+                                  Icons.supervised_user_circle_sharp),
+                            ),
+                            title: Text(snapshot.data![index].title!),
+                            subtitle: Text(
+                                "Exam Code: ${snapshot.data![index].examCode.toString()}"),
                           ),
-                          title: Text(snapshot.data![index].title!),
-                          subtitle: Text(
-                              "${snapshot.data![index].duration.toString()} minutes"),
                         ),
                       );
                     },

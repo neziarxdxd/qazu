@@ -76,4 +76,16 @@ class Accounts {
     final box = await Hive.openBox<AccountModel>('accounts');
     await box.delete(id);
   }
+
+  bool isEmailAccountExist(String email) {
+    final box = Hive.box('accounts');
+    bool isExist = false;
+    for (int i = 0; i < box.length; i++) {
+      if (box.getAt(i)!.email == email) {
+        isExist = true;
+        break;
+      }
+    }
+    return isExist;
+  }
 }

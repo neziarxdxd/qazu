@@ -217,58 +217,61 @@ class _QuizListStudentsState extends State<QuizListStudents> {
                           });
                         },
                         child: ListTile(
-                          onTap: () {
-                            (quizDB.isQuizHasQuestions(
-                                        snapshot.data![index].examCode!) &&
-                                    !isQuizDone)
-                                ? Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MyWidget(
-                                        score: 0,
-                                        fullNameTaker:
-                                            widget.fullNameTaker ?? '',
-                                        studentKeyID: widget.studentKeyID ?? 0,
-                                        examCode:
-                                            snapshot.data![index].examCode!,
-                                        duration: 10,
-                                        emailTaker: widget.emailTaker ?? '',
-                                        quizDescription:
-                                            snapshot.data![index].quizID ?? '',
-                                        quizTitle:
-                                            snapshot.data![index].quizTitle ??
-                                                '',
+                            onTap: () {
+                              (quizDB.isQuizHasQuestions(
+                                          snapshot.data![index].examCode!) &&
+                                      !isQuizDone)
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyWidget(
+                                          score: 0,
+                                          fullNameTaker:
+                                              widget.fullNameTaker ?? '',
+                                          studentKeyID:
+                                              widget.studentKeyID ?? 0,
+                                          examCode:
+                                              snapshot.data![index].examCode!,
+                                          duration: 10,
+                                          emailTaker: widget.emailTaker ?? '',
+                                          quizDescription:
+                                              snapshot.data![index].quizID ??
+                                                  '',
+                                          quizTitle:
+                                              snapshot.data![index].quizTitle ??
+                                                  '',
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : isQuizDone
-                                    ? ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                            content: Text(
-                                                "You have already done this quiz")))
-                                    : ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                            content: Text(
-                                                "This quiz is not available")));
-                          },
-                          title: Text(snapshot.data![index].fullName!),
-                          // score with is done or not with icon
-                          trailing: Icon(
-                            quizDB.isQuizHasQuestions(
-                                    snapshot.data![index].examCode!)
-                                ? snapshot.data![index].isDone == "yes"
-                                    ? Icons.done_outline
-                                    : Icons.open_in_new
-                                : Icons.lock,
-                            color: quizDB.isQuizHasQuestions(
-                                    snapshot.data![index].examCode!)
-                                ? Colors.blue
-                                : Colors.black54,
-                          ),
-                          // exam code
-                          subtitle: Text(
-                              "ExamCode: ${snapshot.data![index].examCode.toString()}"),
-                        ),
+                                    )
+                                  : isQuizDone
+                                      ? ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "You have already done this quiz")))
+                                      : ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "This quiz is not available")));
+                            },
+                            title: Text(
+                                "Exam Code: ${snapshot.data![index].examCode!}"),
+                            // score with is done or not with icon
+                            trailing: Icon(
+                              quizDB.isQuizHasQuestions(
+                                      snapshot.data![index].examCode!)
+                                  ? snapshot.data![index].isDone == "yes"
+                                      ? Icons.done_outline
+                                      : Icons.open_in_new
+                                  : Icons.lock,
+                              color: quizDB.isQuizHasQuestions(
+                                      snapshot.data![index].examCode!)
+                                  ? Colors.blue
+                                  : Colors.black54,
+                            ),
+                            // exam code
+                            subtitle: Text(
+                              "Score: ${snapshot.data![index].score == null ? "0" : snapshot.data![index].score!.toInt().toString()}",
+                            )),
                       );
                     },
                   );

@@ -150,7 +150,9 @@ class _LoginAccountsState extends State<LoginAccounts> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const AddQuizPage(),
+                              builder: (context) => AddQuizPage(
+                                teacherEmail: email,
+                              ),
                             ),
                           );
                         } else if (getRole == 'student') {

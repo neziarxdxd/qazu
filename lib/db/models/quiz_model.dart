@@ -17,13 +17,16 @@ class QuizModel {
   List<QuestionAnswerModel>? questions;
   @HiveField(4)
   String? examCode;
+  @HiveField(6)
+  String? teacherEmail;
   QuizModel(
       {this.id,
       this.title,
       this.description,
       this.duration,
       this.questions,
-      this.examCode});
+      this.examCode,
+      this.teacherEmail});
   bool invalidExamCode(String examCode) {
     // Only Letters and Numbers
     RegExp regExp = RegExp(r"^[a-zA-Z0-9]+$");
